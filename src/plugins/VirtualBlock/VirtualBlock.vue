@@ -24,8 +24,7 @@
 
       <!-- 下拉到底部弹出对应的加载提醒，其是否显示根据父组件请求数据状态进行显示 -->
       <div class="loading" v-if="ifRequest">
-        <Icon type="ios-loading" size="18" class="load"></Icon>
-        <div>小二正在努力，请耐心等待</div>
+        <div>小二正在努力，请耐心等待...</div>
       </div>
     </div>
   </div>
@@ -210,6 +209,7 @@ export default {
   height: 100%;
   overflow-y: auto;
   position: relative;
+  -webkit-overflow-scrolling: touch;
   .loading {
     display: flex;
     flex-flow: row nowrap;
