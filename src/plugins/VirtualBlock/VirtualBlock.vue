@@ -53,6 +53,8 @@ export default {
    * 对应的参数介绍：
       needReanderList ： 需要渲染数数据列表，会根据滚动条的偏移位置而动态的计算，这是一个数组，素组的长度就是传过来的bufferSize参数
       listDataLength ： 所有源数据的对象数组的长度
+      scorllPosionOld ： 记录上一次滚动时所在的位置，主要用来判断方向
+      offsetBlock ： 主要用来记录当前滚动在当前列上的偏移量
       current ： 当前滚动显示所在的索引位置
       offsetTop ：当前滚动后padding-top应该设置的值
       offsetBottom ：当前滚动后padding-bottom应该设置的值
@@ -63,6 +65,7 @@ export default {
       needReanderList: [],
       listDataLength: 0,
       scorllPosionOld: 0,
+      offsetBlock: 0,
       current: 0,
       offsetTop: 0,
       offsetBottom: 0,
@@ -141,6 +144,8 @@ export default {
         }
         this.scorllPosionOld = scrollHeight;
        * */
+      // 记录偏移量
+      this.offsetBlock = scrollHeight % this.height;
 
       // 第二步，根据当前位移，获取到当前需要渲染的数据起点位移所在位置，使用两次取反的方式计算对应的值
       let current = ~~(scrollHeight / this.height);
@@ -220,7 +225,7 @@ export default {
       );
       this.needReanderList = [...subArr];
       this.$nextTick(() => {
-        this.$refs.scrollContainer.scrollTop = this.offsetTop;
+        this.$refs.scrollContainer.scrollTop = this.offsetTop + this.offsetBlock;
       });
     }
   }
