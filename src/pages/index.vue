@@ -52,6 +52,7 @@
 
 <script>
 import * as _ from "lodash";
+import { setTimeout } from 'timers';
 export default {
   data() {
     return {
@@ -60,10 +61,6 @@ export default {
       //用来通知子组件内部的加载提示是否需要显示
       ifRequest: true
     };
-  },
-  created() {
-    //使用debounce插件防抖动策略，防止多次向服务器发出数据请求，造成资源消耗
-    this.debouceRequest = _.debounce(this.moreRequest, 100);
   },
   async mounted() {
     // 分批发送请求时，先请求一部分数据保证数据显示
@@ -79,15 +76,24 @@ export default {
       }).then(res => res.json());
     },
     // 到达底部重新获取数据，触发这个事件是子组件下拉数据到底部以后再进行触发的
-    atBottom() {
-      this.debouceRequest();
+    atBottom(fn) {
+      console.log(fn);
+      this.moreRequest(fn);
     },
-    //用户下拉到底部后，再次发出批量数据请求信息，并将新得到的数据放到整个数据对象数组中以方便调用显示
-    async moreRequest() {
+    /**
+     * 用户下拉到底部后，再次发出批量数据请求信息，并将新得到的数据放到整个数据对象数组中以方便调用显示
+     * 这里将回调的纯函数进行了传递和调用，确保数据的顺利加载‘’
+     * 同时，这里有一个非常重要的环节就是：如果我现在正在请求数据，那么用户在子组件中就算是再次触发下拉到底的操作也不会重复请求追加数据，这个是基于数据请求速度本身进行防抖设置的具有极大的优势
+     */
+    async moreRequest(fn) {
+      if(this.ifRequest) return ;
       this.ifRequest = true;
       let result = await this.getMock(150);
       this.listData = [...this.listData, ...result.list];
-      this.ifRequest = false;
+      this.$nextTick(() => {
+        this.ifRequest = false;
+        fn();
+      });
     }
   }
 };
@@ -158,7 +164,7 @@ export default {
               height: 42px;
             }
             .small {
-              margin-top:5px;
+              margin-top: 5px;
               font-size: 12px;
               color: #666;
               height: 16px;

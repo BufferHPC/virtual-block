@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { setTimeout } from "timers";
+import { setTimeout, clearTimeout } from "timers";
 export default {
   /**
    * 从父组件传递过来的数据信息
@@ -77,9 +77,6 @@ export default {
    */
   watch: {
     listData(newVal, oldVal) {
-      if (newVal.length === oldVal.length) {
-        return;
-      }
       //当第一次请求数据成功的时候，需要初始化需要显示的区域显示出来
       this.listDataLength = newVal.length;
       if (newVal.length > 0 && oldVal.length == 0) {
@@ -117,9 +114,10 @@ export default {
        */
       if (this.bufferChangeTag) {
         this.bufferChangeTag = false;
-        setTimeout(() => {
+        let timer = setTimeout(() => {
           window.requestAnimationFrame(this.changeBufferneedReanderList);
           this.bufferChangeTag = true;
+          clearTimeout(timer);
         }, 100);
       }
     },
@@ -156,7 +154,6 @@ export default {
         this.offsetTop -
         this.bufferSize * this.height +
         80;
-
       //第五步： 当当前位移的位置和系统当前记录的位移不一致的情况下，我们就需要及时修正其缓冲区的数据进行显示，同时使用拓展运算符进行拷贝，触发数据更新实现虚拟滚动
       this.current = current;
       let subArr = this.listData.slice(
@@ -165,10 +162,42 @@ export default {
       );
       this.needReanderList = [...subArr];
 
-      // 我们根据bufferSize的值进行监听，如果当前位置超过了缓存上限则执行请求
-      if (current >= this.listDataLength - this.bufferSize) {
+      /**
+       * 下一次数据请求的时机是一个很难把握的行为，因为用户
+       * 我们根据bufferSize的值进行监听，如果当前位置超过了缓存上限则执行请求
+       * 这样做的优势是：可以让用户无感的情况下，后台根据合适的时机顺利的发出请求，并主动的填充数据
+       * 但是，问题是：用户的行为是不可知的，我们就算采用数据节流等各种方式，也无法确保多次数据的请求注入，这个从时间上来讲，本身就是一个悖论，容易出现风险
+       * if (current >= this.listDataLength - this.bufferSize) {
+          this.offsetBottom = 80;
+          this.$emit("bottom", () => {
+            this.current = current;
+            let subArr = this.listData.slice(
+              this.current,
+              this.current + this.bufferSize
+            );
+            this.needReanderList = [...subArr];
+          });
+        }
+       */
+
+      /**
+       * 如果我们监听的是下拉到底部的时候，再发出请求，这样的不足之处就是：用户在底部需要等待数据加载
+       * 但是优势是：到底的行为是稳定的，同时，数据请求过程中也可以根据断点标签进行节流防止多次请求
+       * 所以这种方案是相对合理的
+       *  */
+      if (
+        current + ~~((window.innerHeight - 100) / this.height) + 1 >=
+        this.listDataLength
+      ) {
         this.offsetBottom = 80;
-        this.$emit("bottom");
+        this.$emit("bottom", () => {
+          this.current = current;
+          let subArr = this.listData.slice(
+            this.current,
+            this.current + this.bufferSize
+          );
+          this.needReanderList = [...subArr];
+        });
       }
     }
   }
