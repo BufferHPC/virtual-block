@@ -14,15 +14,15 @@
       </div>
       <div>
         <p class="title">数据请求分割</p>
-        <p class="more">我尽可能满足业务场景需求，采取第一次合理片段数据请求，后根据用户滚动到缓冲区允许范围外时，实时发送数据请求，以期望提高用户更好体验</p>
+        <p class="more">尽可能满足业务场景需求，采取第一次合理片段数据请求，后根据用户滚动到缓冲区允许范围外时，实时发送数据请求，以期望提高用户更好体验</p>
       </div>
       <div>
         <p class="title">虚拟滚动渲染</p>
-        <p class="more">对海量的数据，动态的截取其中合理的一部分，不断的用数据中的部分值来刷新页面，从而产生虚拟滚动的过程</p>
+        <p class="more">对海量的数据，监听浏览器滚动事件，动态的截取其中当前需要显示的部分，不断更新数据来刷新页面，从而产生虚拟滚动的过程。同时向下滚动设置一个Buff缓冲值，值越大向下快速滚动速度极快情况下也能确保更加平滑的体验，但是会牺牲一定的浏览器性能；值不能小于一个屏幕能够装下的数据条数，可以将值适当减小，这样可以提高性能不高设备的体验感觉</p>
       </div>
       <div>
         <p class="title">页面防抖优化</p>
-        <p class="more">基于Debounce防抖和浏览器重采样策略requestAnimationFrame来进行优化，后使用tag监听的方式配合requestAnimationFrame组合实现优化</p>
+        <p class="more">基于Debounce防抖和浏览器重采样策略requestAnimationFrame来进行优化，后使用tag监听的方式配合requestAnimationFrame组合使用setTimer来实现优化</p>
       </div>
       <div>
         <p class="title">集成插件输出</p>
