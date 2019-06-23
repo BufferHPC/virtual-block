@@ -2,7 +2,9 @@
   <div id="app">
     <!-- 路由放置区域 -->
     <div class="router" :style="{ height : containerHeight+'px' }">
-      <router-view></router-view>
+      <keep-alive>
+        <router-view></router-view>
+      </keep-alive>
     </div>
     <!-- 底部导航栏目 -->
     <my-footer></my-footer>

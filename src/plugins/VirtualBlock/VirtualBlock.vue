@@ -86,7 +86,12 @@ export default {
       }
     }
   },
-  mounted() {},
+  /**
+   * 在实际应用场景中，用户在访问列表中间切换到其他路由后再切换回来的场景，用户会希望返回的时候能够准确定位到上一次查看信息所在的位置，以期望更好的体验
+   */
+  activated() {
+    this.keepaliveShow();
+  },
   methods: {
     handleScroll(e) {
       /*
@@ -198,6 +203,25 @@ export default {
           this.needReanderList = [...subArr];
         });
       }
+    },
+/**
+ * 在keep-alive路由模式下，切换路由时确保能够返回用户之前所在位置
+ */
+    keepaliveShow() {
+      this.offsetTop = this.current * this.height;
+      this.offsetBottom =
+        this.listDataLength * this.height -
+        this.offsetTop -
+        this.bufferSize * this.height +
+        80;
+      let subArr = this.listData.slice(
+        this.current,
+        this.current + this.bufferSize
+      );
+      this.needReanderList = [...subArr];
+      this.$nextTick(() => {
+        this.$refs.scrollContainer.scrollTop = this.offsetTop;
+      });
     }
   }
 };

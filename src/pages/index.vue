@@ -51,8 +51,6 @@
 </template>
 
 <script>
-import * as _ from "lodash";
-import { setTimeout } from 'timers';
 export default {
   data() {
     return {
