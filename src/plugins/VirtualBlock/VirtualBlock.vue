@@ -8,8 +8,8 @@
       <div v-for="(item,index) in needReanderList" :key="index">
         <slot :childItem="item"></slot>
       </div>
-      <div class="loading" v-if="onRequesting">
-        <div>小二正在努力，请耐心等待...</div>
+      <div class="loading" v-if="onRequesting || endIng">
+        <div>{{msg}}</div>
       </div>
     </div>
   </div>
@@ -37,7 +37,11 @@ export default {
       //设置在scoll事件频发调用状态，只有为true时才能触发相应操作，设置断点提高防抖性能
       bufferChangeTag: true,
       //记录当前行模块的偏移量
-      offsetBlock: 0
+      offsetBlock: 0,
+      //数据加载显示的区域
+      msg: "小二正在努力，请耐心等待...",
+      //到达底部触发显示
+      endIng: false
     };
   },
   computed: {
@@ -114,20 +118,13 @@ export default {
     });
   },
   methods: {
-    //监听屏幕变化，动态获取屏幕最大容积数量
+    //监听屏幕变化，动态获取屏幕最大容积数量，直接使用对应渲染API体验效果更佳
     myresize() {
       this.screenNum = ~~((window.innerHeight - 100) / this.blockHeight) + 2;
     },
     //监听当前容器的滚动事件
-    handleScroll() {
-      if (this.bufferChangeTag) {
-        this.bufferChangeTag = false;
-        let timer = setTimeout(() => {
-          window.requestAnimationFrame(this.changeBufferneedReanderList);
-          this.bufferChangeTag = true;
-          clearTimeout(timer);
-        }, 100);
-      }
+    handleScroll(e) {
+      window.requestAnimationFrame(this.changeBufferneedReanderList);
     },
     //根据滚动事件修正相应数据
     changeBufferneedReanderList(e) {
@@ -142,9 +139,16 @@ export default {
       //第四步：判断是否到达底部，如果到达底部则触发新的数据请求
       if (currentBlockIndex + this.screenNum >= this.allDataListLength) {
         //如果用户滑动过快，因为截流函数100毫秒内，可能会导致很多值变化，offectBottom会因为计算属性而导致不合理变化，需要重新设置
-        this.$refs.wapperBox.style.paddingTop = (this.allDataListLength - this.bufferSize) * this.blockHeight;
+        this.$refs.wapperBox.style.paddingTop =
+          (this.allDataListLength - this.bufferSize) * this.blockHeight;
         this.$refs.wapperBox.style.paddingBottom = "0px";
-        this.$emit("bottom");
+        //设置一个底部请求值，到达600条的时候提示到达底部
+        if (currentBlockIndex + this.screenNum > 500) {
+          this.endIng = true;
+          this.msg = "亲，到底啦！别再拉我啦！";
+        } else {
+          this.$emit("bottom");
+        }
       } else {
         //第五步：如果没有到达底部，我们只需要在这里修正其新的index即可，剩下的交给计算属性来完成更详细的细节工作
         this.currentBlockIndex = currentBlockIndex;
