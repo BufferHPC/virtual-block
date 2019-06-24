@@ -112,6 +112,7 @@ export default {
     /**
      * 在keep-alive路由模式下，切换路由时确保能够返回用户之前所在位置
      */
+    console.log(this.blockHeight);
     this.$nextTick(() => {
       this.$refs.scrollContainer.scrollTop =
         this.currentBlockIndex * this.blockHeight + this.offsetBlock;
@@ -124,34 +125,19 @@ export default {
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
-      //浏览器防抖优化：根据浏览器FPS采用递归方法（常见游戏优化策略），队列调用requestAnimationFrame方法实现优化，同时兼容低浏览器版本
-      let fps = 30;
-      let now;
-      let then = Date.now();
-      let interval = 1000 / fps;
-      let delta;
-      let that = this;
       window.requestAnimationFrame =
         window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.msRequestAnimationFrame;
-
-      function tick() {
-        if (window.requestAnimationFrame) {
-          requestAnimationFrame(tick);
-          now = Date.now();
-          delta = now - then;
-          if (delta > interval) {
-            then = now - (delta % interval);
-            that.changeBufferneedReanderList();
-          }
-        } else {
-          setTimeout(tick, interval);
-          that.changeBufferneedReanderList();
-        }
+      if (this.bufferChangeTag) {
+        this.bufferChangeTag = false;
+        let timer = setTimeout(() => {
+          window.requestAnimationFrame(this.changeBufferneedReanderList);
+          this.bufferChangeTag = true;
+          clearTimeout(timer);
+        }, 66);
       }
-      tick();
     },
     //根据滚动事件修正相应数据
     changeBufferneedReanderList(e) {
