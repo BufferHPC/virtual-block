@@ -124,7 +124,14 @@ export default {
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
-      window.requestAnimationFrame(this.changeBufferneedReanderList);
+      if (this.bufferChangeTag) {
+        this.bufferChangeTag = false;
+        let timer = setTimeout(() => {
+          window.requestAnimationFrame(this.changeBufferneedReanderList);
+          this.bufferChangeTag = true;
+          clearTimeout(timer);
+        }, 100);
+      }
     },
     //根据滚动事件修正相应数据
     changeBufferneedReanderList(e) {
