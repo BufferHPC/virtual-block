@@ -124,13 +124,13 @@ export default {
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
-      /*
-       * 常规解决方案，基于设置的一个延迟器进行截流实现优化，但是整体体验不好，进一步采用更优策略
       window.requestAnimationFrame =
         window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.msRequestAnimationFrame;
+      /*
+       * 常规解决方案，基于设置的一个延迟器进行截流实现优化，但是整体体验不好，进一步采用更优策略
       if (this.bufferChangeTag) {
         this.bufferChangeTag = false;
         let timer = setTimeout(() => {
