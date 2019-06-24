@@ -125,6 +125,8 @@ export default {
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
+      /*
+       * 常规解决方案，基于设置的一个延迟器进行截流实现优化，但是整体体验不好，进一步采用更优策略
       window.requestAnimationFrame =
         window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
@@ -137,7 +139,22 @@ export default {
           this.bufferChangeTag = true;
           clearTimeout(timer);
         }, 66);
-      }
+      }*/
+      //浏览器防抖优化：根据浏览器FPS采用递归方法（常见游戏优化策略），队列调用requestAnimationFrame方法实现优化，同时兼容低浏览器版本
+      let fps = 30;
+      let now;
+      let then = Date.now();
+      let interval = 1000 / fps;
+      let that = this;
+      requestAnimationFrame(function() {
+        now = Date.now();
+        let delta = now - then;
+        then = now;
+        that.changeBufferneedReanderList();
+        if (delta >= interval) {
+          requestAnimationFrame(arguments.callee);
+        }
+      });
     },
     //根据滚动事件修正相应数据
     changeBufferneedReanderList(e) {
@@ -147,6 +164,7 @@ export default {
       this.offsetBlock = scrollHeight % this.blockHeight;
       //第二步，根据当前位移，获取到当前需要渲染的数据起点位移所在位置，使用两次取反的方式计算对应的值
       let currentBlockIndex = ~~(scrollHeight / this.blockHeight);
+      console.log(currentBlockIndex);
       //第三步：如果我们发现当前的偏移量发生了变化，说明需要更新整个needReanderList对应的值了，这里要做一个判断，如果当前值没有发生变化则不进行渲染，防止资源消耗提高性能
       if (this.currentBlockIndex == currentBlockIndex) return;
       //第四步：判断是否到达底部，如果到达底部则触发新的数据请求
