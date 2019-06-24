@@ -143,7 +143,7 @@ export default {
           (this.allDataListLength - this.bufferSize) * this.blockHeight;
         this.$refs.wapperBox.style.paddingBottom = "0px";
         //设置一个底部请求值，到达600条的时候提示到达底部
-        if (currentBlockIndex + this.screenNum > 500) {
+        if (currentBlockIndex + this.screenNum > 450) {
           this.endIng = true;
           this.msg = "亲，到底啦！别再拉我啦！";
         } else {
