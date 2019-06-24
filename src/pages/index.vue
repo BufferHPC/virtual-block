@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 顶部标题栏目，对应的宽度是40px -->
     <h1 class="header">
-      传智播客
+      柔宇科技
       <span class="router-label">>> 新闻中心</span>
     </h1>
     <!-- 
@@ -18,10 +18,10 @@
     <virtual-block
       style="height:100%"
       class="scroller"
-      :listData="this.listData"
-      :height="150"
-      :bufferSize="20"
-      :ifRequest="ifRequest"
+      :allDataList="this.listData"
+      :blockHeight="150"
+      :bufferSize="5"
+      :onRequesting="ifRequest"
       @bottom="atBottom"
       v-slot:default="needRenderList"
     >
@@ -74,23 +74,20 @@ export default {
       }).then(res => res.json());
     },
     // 到达底部重新获取数据，触发这个事件是子组件下拉数据到底部以后再进行触发的
-    atBottom(fn) {
-      this.moreRequest(fn);
+    atBottom() {
+      this.moreRequest();
     },
     /**
      * 用户下拉到底部后，再次发出批量数据请求信息，并将新得到的数据放到整个数据对象数组中以方便调用显示
      * 这里将回调的纯函数进行了传递和调用，确保数据的顺利加载
      * 同时，这里有一个非常重要的环节就是：如果我现在正在请求数据，那么用户在子组件中就算是再次触发下拉到底的操作也不会重复请求追加数据，这个是基于数据请求速度本身进行防抖设置的具有极大的优势
      */
-    async moreRequest(fn) {
+    async moreRequest() {
       if(this.ifRequest) return ;
       this.ifRequest = true;
       let result = await this.getMock(150);
       this.listData = [...this.listData, ...result.list];
-      this.$nextTick(() => {
-        this.ifRequest = false;
-        fn();
-      });
+      this.ifRequest = false;
     }
   }
 };
