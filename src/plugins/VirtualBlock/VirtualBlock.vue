@@ -39,7 +39,9 @@ export default {
       //设置在scoll事件频发调用状态，只有为true时才能触发相应操作，设置断点提高防抖性能
       bufferChangeTag: true,
       //记录当前行模块的偏移量
-      offsetBlock: 0
+      offsetBlock: 0,
+      //用来记录准确的当前block定位
+      rebackCurrentBlockIndex: 0
     };
   },
   computed: {
@@ -112,7 +114,7 @@ export default {
      */
     this.$nextTick(() => {
       this.$refs.scrollContainer.scrollTop =
-        this.currentBlockIndex * this.blockHeight + this.offsetBlock;
+        this.rebackCurrentBlockIndex * this.blockHeight + this.offsetBlock;
     });
   },
   methods: {
@@ -152,6 +154,7 @@ export default {
       this.offsetBlock = scrollHeight % this.blockHeight;
       //第二步，根据当前位移，获取到当前需要渲染的数据起点位移所在位置，使用两次取反的方式计算对应的值
       let currentBlockIndex = ~~(scrollHeight / this.blockHeight);
+      this.rebackCurrentBlockIndex = currentBlockIndex;
       //第三步：如果我们发现当前的偏移量发生了变化，说明需要更新整个needReanderList对应的值了，这里要做一个判断，如果当前值没有发生变化则不进行渲染，防止资源消耗提高性能
       if (this.currentBlockIndex == currentBlockIndex) return;
       //第四步：判断是否到达底部，如果到达底部则触发新的数据请求
