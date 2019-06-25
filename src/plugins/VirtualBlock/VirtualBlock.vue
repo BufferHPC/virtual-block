@@ -8,7 +8,7 @@
       <div v-for="(item,index) in needReanderList" :key="index">
         <slot :childItem="item"></slot>
       </div>
-      <div class="loading" v-if="onRequesting || endIng">
+      <div class="loading" v-if="onRequesting">
         <div>{{msg}}</div>
       </div>
     </div>
@@ -26,7 +26,9 @@ export default {
     //单行显示高度
     blockHeight: { default: 150, type: Number },
     //是否正在请求批量数据状态
-    onRequesting: { default: true, type: Boolean }
+    onRequesting: { default: true, type: Boolean },
+    //数据加载显示的区域
+    msg: { default: "小二正在努力，请耐心等待...", type: String }
   },
   data() {
     return {
@@ -37,11 +39,7 @@ export default {
       //设置在scoll事件频发调用状态，只有为true时才能触发相应操作，设置断点提高防抖性能
       bufferChangeTag: true,
       //记录当前行模块的偏移量
-      offsetBlock: 0,
-      //数据加载显示的区域
-      msg: "小二正在努力，请耐心等待...",
-      //到达底部触发显示
-      endIng: false
+      offsetBlock: 0
     };
   },
   computed: {
@@ -124,21 +122,12 @@ export default {
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
+      //兼容低版本浏览器
       window.requestAnimationFrame =
         window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
         window.webkitRequestAnimationFrame ||
         window.msRequestAnimationFrame;
-      /*
-       * 常规解决方案，基于设置的一个延迟器进行截流实现优化，但是整体体验不好，进一步采用更优策略
-      if (this.bufferChangeTag) {
-        this.bufferChangeTag = false;
-        let timer = setTimeout(() => {
-          window.requestAnimationFrame(this.changeBufferneedReanderList);
-          this.bufferChangeTag = true;
-          clearTimeout(timer);
-        }, 66);
-      }*/
       //浏览器防抖优化：根据浏览器FPS采用递归方法（常见游戏优化策略），队列调用requestAnimationFrame方法实现优化，同时兼容低浏览器版本
       let fps = 30;
       let now;
@@ -171,13 +160,7 @@ export default {
         this.$refs.wapperBox.style.paddingTop =
           (this.allDataListLength - this.bufferSize) * this.blockHeight;
         this.$refs.wapperBox.style.paddingBottom = "0px";
-        //设置一个底部请求值，到达600条的时候提示到达底部
-        if (currentBlockIndex + this.screenNum > 450) {
-          this.endIng = true;
-          this.msg = "亲，到底啦！别再拉我啦！";
-        } else {
-          this.$emit("bottom");
-        }
+        this.$emit("bottom");
       } else {
         //第五步：如果没有到达底部，我们只需要在这里修正其新的index即可，剩下的交给计算属性来完成更详细的细节工作
         this.currentBlockIndex = currentBlockIndex;

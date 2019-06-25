@@ -12,6 +12,7 @@
       height： 当前列栏目的定高
       bufferSize ： 一次性需要渲染的对应条数
       ifRequest ：当前是否处于数据请求状态，如果处于数据请求状态则在子组件中显示加载提示
+      msg : 用来进行相应提示的通知
       @bottom ：当前子组件在下拉到底部的时候，触发数据请求相关事件
       v-slot：作用域插槽，也叫带数据作用域的插槽，可以拿到子组件注入的对应数据进行响应
     -->
@@ -22,6 +23,7 @@
       :blockHeight="150"
       :bufferSize="5"
       :onRequesting="ifRequest"
+      :msg="msg"
       @bottom="atBottom"
       v-slot:default="needRenderList"
     >
@@ -57,21 +59,31 @@ export default {
       //用来存放当前数据源的对象数组
       listData: [],
       //用来通知子组件内部的加载提示是否需要显示
-      ifRequest: true
+      ifRequest: true,
+      //用来进行相应提示的通知
+      msg: "小二正在努力，请耐心等待..."
     };
   },
   async mounted() {
     // 分批发送请求时，先请求一部分数据保证数据显示
     let request = await this.getMock(50);
-    this.listData = [...request.list];
-    this.ifRequest = false;
+    if(!!request && request.length > 0){
+      this.listData = [...request];
+      this.ifRequest = false;
+    }
   },
   methods: {
     // 发送请求获取新的请求模拟数据，这个是跨域请求的网络mock数据
     getMock(num) {
-      return fetch("http://52.199.69.165:4000/data?num=" + num, {
-        mode: "cors"
-      }).then(res => res.json());
+      return this.$axios
+        .get("http://52.199.69.165:4000/data?num=" + num)
+        .then(res => {
+          return res.data.list;
+        })
+        .catch(err => {
+          this.msg = "亲，网络请求出错啦！赶快检查吧...";
+          return false;
+        });
     },
     // 到达底部重新获取数据，触发这个事件是子组件下拉数据到底部以后再进行触发的
     atBottom() {
@@ -83,10 +95,16 @@ export default {
      * 同时，这里有一个非常重要的环节就是：如果我现在正在请求数据，那么用户在子组件中就算是再次触发下拉到底的操作也不会重复请求追加数据，这个是基于数据请求速度本身进行防抖设置的具有极大的优势
      */
     async moreRequest() {
-      if(this.ifRequest) return ;
+      //设置最多允许请求600条数据
+      if(this.listData.length >= 600){
+        this.ifRequest = true;
+        this.msg = "亲，到底啦！我是有底线的！";
+        return;
+      }
+      if (this.ifRequest) return;
       this.ifRequest = true;
       let result = await this.getMock(150);
-      this.listData = [...this.listData, ...result.list];
+      this.listData = [...this.listData, ...result];
       this.ifRequest = false;
     }
   }
