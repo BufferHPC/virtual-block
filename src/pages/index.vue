@@ -66,7 +66,7 @@ export default {
   },
   async mounted() {
     // 分批发送请求时，先请求一部分数据保证数据显示
-    let request = await this.getMock(50);
+    let request = await this.getMock(20);
     if(!!request && request.length > 0){
       this.listData = [...request];
       this.ifRequest = false;
@@ -96,14 +96,14 @@ export default {
      */
     async moreRequest() {
       //设置最多允许请求600条数据
-      if(this.listData.length >= 600){
+      if(this.listData.length >= 200){
         this.ifRequest = true;
         this.msg = "亲，到底啦！我是有底线的！";
         return;
       }
       if (this.ifRequest) return;
       this.ifRequest = true;
-      let result = await this.getMock(150);
+      let result = await this.getMock(20);
       this.listData = [...this.listData, ...result];
       this.ifRequest = false;
     }
