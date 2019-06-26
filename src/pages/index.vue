@@ -2,7 +2,7 @@
   <div class="container">
     <!-- 顶部标题栏目，对应的宽度是40px -->
     <h1 class="header">
-      柔宇科技
+      传智播客
       <span class="router-label">>> 新闻中心</span>
     </h1>
     <!-- 
@@ -67,7 +67,7 @@ export default {
   async mounted() {
     // 分批发送请求时，先请求一部分数据保证数据显示
     let request = await this.getMock(20);
-    if(!!request && request.length > 0){
+    if (!!request && request.length > 0) {
       this.listData = [...request];
       this.ifRequest = false;
     }
@@ -96,7 +96,7 @@ export default {
      */
     async moreRequest() {
       //设置最多允许请求600条数据
-      if(this.listData.length >= 200){
+      if (this.listData.length >= 200) {
         this.ifRequest = true;
         this.msg = "亲，到底啦！我是有底线的！";
         return;

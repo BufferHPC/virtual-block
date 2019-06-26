@@ -1,7 +1,4 @@
-<!-- 
-  这个Demo根据用户传递过来的值，同时设置了向上和向下两个缓冲区，确保不管是向上滚动还是向下滚动都能确保非常顺畅的用户体验
--->
-
+<!-- 这个Demo根据用户传递过来的值，同时设置了向上和向下两个缓冲区，确保不管是向上滚动还是向下滚动都能确保非常顺畅的用户体验 -->
 <template>
   <div class="container" @scroll.passive="handleScroll" ref="scrollContainer">
     <div class="warpper" :style="paddingStyle" ref="wapperBox">
@@ -16,7 +13,6 @@
 </template>
 
 <script>
-import { setTimeout, clearTimeout } from "timers";
 export default {
   props: {
     //所有获取数据列表
@@ -109,9 +105,7 @@ export default {
     window.orientationchange = this.myresize;
   },
   activated() {
-    /**
-     * 在keep-alive路由模式下，切换路由时确保能够返回用户之前所在位置
-     */
+    //在keep-alive路由模式下，切换路由时确保能够返回用户之前所在位置
     this.$nextTick(() => {
       this.$refs.scrollContainer.scrollTop =
         this.rebackCurrentBlockIndex * this.blockHeight + this.offsetBlock;
@@ -121,6 +115,7 @@ export default {
     //监听屏幕变化，动态获取屏幕最大容积数量，直接使用对应渲染API体验效果更佳
     myresize() {
       this.screenNum = ~~((window.innerHeight - 100) / this.blockHeight) + 2;
+      this.$refs.scrollContainer.style.height = (window.innerHeight - 100)+"px";
     },
     //监听当前容器的滚动事件
     handleScroll(e) {
@@ -181,6 +176,9 @@ export default {
   overflow-y: auto;
   position: relative;
   -webkit-overflow-scrolling: touch;
+  .warpper{
+    height:100%;
+  }
   .loading {
     display: flex;
     flex-flow: row nowrap;
