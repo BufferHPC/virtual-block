@@ -32,8 +32,6 @@ export default {
       screenNum: 5,
       //当前块所在的位置索引
       currentBlockIndex: 0,
-      //设置在scoll事件频发调用状态，只有为true时才能触发相应操作，设置断点提高防抖性能
-      bufferChangeTag: true,
       //记录当前行模块的偏移量
       offsetBlock: 0,
       //用来记录准确的当前block定位

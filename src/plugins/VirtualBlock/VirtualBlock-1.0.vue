@@ -21,7 +21,7 @@
 
     <div class="warpper" :style="{paddingTop:offsetTop+'px',paddingBottom:offsetBottom+'px'}">
       <!-- 使用数据插槽的方式向调用当前组件的父组件插槽内部传递相应的值，这里传递的是所有待渲染的数据列表 -->
-      <div v-for="item in needReanderList">
+      <div v-for="(item,index)  in needReanderList" :key="index">
         <slot :childItem="item"></slot>
       </div>
 
