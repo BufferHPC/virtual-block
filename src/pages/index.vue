@@ -28,25 +28,27 @@
       v-slot:default="needRenderList"
     >
       <div class="display">
-        <Card class="card">
-          <div class="head">
-            <div class="imgbox">
-              <img :src="needRenderList.childItem.image" alt="图片">
+        <router-link :to="{ path:'/article' , query:{ id : needRenderList.childItem.id, title: needRenderList.childItem.title }}">
+          <Card class="card">
+            <div class="head">
+              <div class="imgbox">
+                <img :src="needRenderList.childItem.image" alt="图片" />
+              </div>
+              <div class="info">
+                <h2>{{needRenderList.childItem.id}} - {{needRenderList.childItem.title}}</h2>
+                <h2 class="small">
+                  {{needRenderList.childItem.time}}
+                  <span
+                    class="thumbup"
+                  >评论：{{needRenderList.childItem.stars}}</span>
+                </h2>
+              </div>
             </div>
-            <div class="info">
-              <h2>{{needRenderList.childItem.id}} - {{needRenderList.childItem.title}}</h2>
-              <h2 class="small">
-                {{needRenderList.childItem.time}}
-                <span
-                  class="thumbup"
-                >评论：{{needRenderList.childItem.stars}}</span>
-              </h2>
+            <div class="content">
+              <span>{{needRenderList.childItem.content}}</span>
             </div>
-          </div>
-          <div class="content">
-            <span>{{needRenderList.childItem.content}}</span>
-          </div>
-        </Card>
+          </Card>
+        </router-link>
       </div>
     </virtual-block>
   </div>

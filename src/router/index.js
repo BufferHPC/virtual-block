@@ -22,6 +22,13 @@ const owner = resolve => {
   })
 }
 
+//新闻详情 异步路由
+const article = resolve => {
+  require.ensure([], () => {
+    resolve(require('@/pages/article.vue'))
+  })
+}
+
 Vue.use(Router)
 
 export default new Router({
@@ -38,6 +45,10 @@ export default new Router({
       path: '/owner',
       name: 'owner',
       component: owner
+    },{
+      path: '/article',
+      name: 'article',
+      component: article
     }
   ]
 })
