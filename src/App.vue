@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <!-- 路由放置区域 -->
+    <!-- 路由放置区域，keep-alive目的是 -->
     <div class="router" :style="{ height : containerHeight+'px' }">
       <keep-alive>
         <router-view></router-view>
@@ -22,14 +22,13 @@ export default {
   data() {
     return {
       //整个可视窗口的高度
-      windowHeight: 0,
-      //虚拟滚动内容路由显示部分高度
-      containerHeight: 0
+      windowHeight: 0
     };
   },
-  watch: {
-    windowHeight(val) {
-      this.containerHeight = this.windowHeight - 60;
+  computed: {
+    //监听resize事件，动态计算容器的高度，为后续允许滚动的范围做好铺垫
+    containerHeight() {
+      return this.windowHeight - 60;
     }
   },
   mounted() {

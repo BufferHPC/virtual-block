@@ -17,13 +17,11 @@
     </div>
   </div>
 </template>
-
 <script>
 //引入对应的icon相关文件
 import company from "../assets/company.png";
 import news from "../assets/news.png";
 import user from "../assets/user.png";
-
 export default {
   data() {
     return {
@@ -34,7 +32,6 @@ export default {
   }
 };
 </script>
-
 <style lang="scss">
 .footer-box{
   position: fixed;

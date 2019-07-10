@@ -14,11 +14,11 @@ module.exports = {
 
     //配置局域网访问权限，主要用来做多设备测试工作
     host: '0.0.0.0',
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8080,
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
-    poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
+    poll: false,
 
     
     /**
@@ -40,10 +40,9 @@ module.exports = {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
 
-    // Paths
+    //修改build文件路径，使用相对路径输出，打包文件本地化可直接访问
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: './static',
-    //修改build文件路径，使用相对路径输出
     assetsPublicPath: './',
 
     /**
