@@ -9,7 +9,9 @@ function generatorList(num) {
       'id|+1': 1,
       title: "@ctitle",
       image: "@image('250x250','@color','@name')",
-      content: "@cparagraph"
+      content: "@cparagraph",
+      time:"@natural(0, 1000)",
+      stars:'@datetime'
     }]
   });
 }
