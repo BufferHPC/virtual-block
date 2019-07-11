@@ -28,7 +28,9 @@
       v-slot:default="needRenderList"
     >
       <div class="display">
-        <router-link :to="{ path:'/article' , query:{ id : needRenderList.childItem.id, title: needRenderList.childItem.title }}">
+        <router-link
+          :to="{ path:'/article' , query:{ id : needRenderList.childItem.id, title: needRenderList.childItem.title }}"
+        >
           <Card class="card">
             <div class="head">
               <div class="imgbox">
@@ -133,6 +135,10 @@ export default {
     }
   }
   .scroller {
+    a {
+      display: block;
+      width: 100%;
+    }
     .display {
       height: 150px;
       display: flex;

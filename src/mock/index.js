@@ -7,9 +7,9 @@ function generatorList(num) {
   return Mock.mock({
     [`list|${num}`]: [{
       'id|+1': 1,
-      title: "@ctitle",
+      title: "@ctitle(10,30)",
       image: "@image('250x250','@color','@name')",
-      content: "@cparagraph",
+      content: "@cparagraph(3,5)",
       time:"@natural(0, 1000)",
       stars:'@datetime'
     }]
