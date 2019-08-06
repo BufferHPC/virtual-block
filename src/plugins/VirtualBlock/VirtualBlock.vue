@@ -16,15 +16,15 @@
 export default {
   props: {
     //所有获取数据列表
-    allDataList: { default: [], type: Array },
+    allDataList: { default: () => [], type: Array },
     //上下环缓存区数目
-    bufferSize: { default: 5, type: Number },
+    bufferSize: { default: () => 5, type: Number },
     //单行显示高度
-    blockHeight: { default: 150, type: Number },
+    blockHeight: { default: () => 150, type: Number },
     //是否正在请求批量数据状态
-    onRequesting: { default: true, type: Boolean },
+    onRequesting: { default: () => true, type: Boolean },
     //数据加载显示的区域
-    msg: { default: "小二正在努力，请耐心等待...", type: String }
+    msg: { default: () => "小二正在努力，请耐心等待...", type: String }
   },
   data() {
     return {
@@ -113,7 +113,7 @@ export default {
     //监听屏幕变化，动态获取屏幕最大容积数量，直接使用对应渲染API体验效果更佳
     myresize() {
       this.screenNum = ~~((window.innerHeight - 100) / this.blockHeight) + 2;
-      this.$refs.scrollContainer.style.height = (window.innerHeight - 100)+"px";
+      this.$refs.scrollContainer.style.height = window.innerHeight - 100 + "px";
     },
     //监听当前容器的滚动事件
     handleScroll() {
@@ -140,7 +140,7 @@ export default {
       });
     },
     //根据滚动事件修正相应数据
-    changeBufferneedReanderList(e) {
+    changeBufferneedReanderList() {
       //第一步，我们获取当前容器在scoll事件中距离顶部的位移
       let scrollHeight = this.$refs.scrollContainer.scrollTop;
       // 记录偏移量
@@ -174,8 +174,8 @@ export default {
   overflow-y: auto;
   position: relative;
   -webkit-overflow-scrolling: touch;
-  .warpper{
-    height:100%;
+  .warpper {
+    height: 100%;
   }
   .loading {
     display: flex;
