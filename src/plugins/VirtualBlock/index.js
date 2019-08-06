@@ -1,7 +1,7 @@
 import VirtualBlock from './VirtualBlock.vue';
 
 const plugin = {
-    install(Vue, options) {
+    install(Vue) {
         Vue.component("VirtualBlock", VirtualBlock);
     }
 }

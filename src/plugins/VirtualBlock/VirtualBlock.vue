@@ -3,7 +3,7 @@
   <div class="container" @scroll.passive="handleScroll" ref="scrollContainer">
     <div class="warpper" :style="paddingStyle" ref="wapperBox">
       <div v-for="(item,index) in needReanderList" :key="index">
-        <slot :childItem="item"></slot>
+        <slot :thisItem="item"></slot>
       </div>
       <div class="loading" v-if="onRequesting">
         <div>{{msg}}</div>
@@ -116,7 +116,7 @@ export default {
       this.$refs.scrollContainer.style.height = (window.innerHeight - 100)+"px";
     },
     //监听当前容器的滚动事件
-    handleScroll(e) {
+    handleScroll() {
       //兼容低版本浏览器
       window.requestAnimationFrame =
         window.requestAnimationFrame ||

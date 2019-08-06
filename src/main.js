@@ -18,11 +18,12 @@ import VirtualBlock from "./plugins/VirtualBlock";
 Vue.use(VirtualBlock);
 
 //阻止启动生产环境提醒
-Vue.config.productionTip = false;
+Vue.config.productionTip = true;
 //实例化Vue对象，挂载对应Dom节点、加入路由依赖、核心入口组件
-new Vue({
-  el: '#app',
+
+const app = new Vue({
   router,
-  components: { App },
-  template: '<App/>'
-})
+  render: h => h(App)
+});
+
+app.$mount("#app")

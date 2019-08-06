@@ -25,29 +25,27 @@
       :onRequesting="ifRequest"
       :msg="msg"
       @bottom="atBottom"
-      v-slot:default="needRenderList"
+      v-slot:default="oneItem"
     >
       <div class="display">
         <router-link
-          :to="{ path:'/article' , query:{ id : needRenderList.childItem.id, title: needRenderList.childItem.title }}"
+          :to="{ path:'/article' , query:{ id : oneItem.thisItem.id, title: oneItem.thisItem.title }}"
         >
           <Card class="card">
             <div class="head">
               <div class="imgbox">
-                <img :src="needRenderList.childItem.image" alt="图片" />
+                <img :src="oneItem.thisItem.image" alt="图片" />
               </div>
               <div class="info">
-                <h2>{{needRenderList.childItem.id}} - {{needRenderList.childItem.title}}</h2>
+                <h2>{{oneItem.thisItem.id}} - {{oneItem.thisItem.title}}</h2>
                 <h2 class="small">
-                  {{needRenderList.childItem.time}}
-                  <span
-                    class="thumbup"
-                  >评论：{{needRenderList.childItem.stars}}</span>
+                  {{oneItem.thisItem.time}}
+                  <span class="thumbup">评论：{{oneItem.thisItem.stars}}</span>
                 </h2>
               </div>
             </div>
             <div class="content">
-              <span>{{needRenderList.childItem.content}}</span>
+              <span>{{oneItem.thisItem.content}}</span>
             </div>
           </Card>
         </router-link>
@@ -84,7 +82,7 @@ export default {
         .then(res => {
           return res.data.list;
         })
-        .catch(err => {
+        .catch(() => {
           this.msg = "亲，网络请求出错啦！赶快检查吧...";
           return false;
         });
